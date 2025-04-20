@@ -51,6 +51,7 @@ public final class ChatClient {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.apiKey)
+                .header("player2-game-key", "TouHouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString(Service.GSON.toJson(chatCompletion)))
                 .timeout(Duration.ofSeconds(20))
                 .uri(URI.create(baseUrl + ChatCompletion.getUrl()))

@@ -44,6 +44,7 @@ public class STTClient {
     public void start(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
+                .header("player2-game-key", "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"timeout\":30}"))
                 .timeout(Duration.ofSeconds(20))
                 .uri(URI.create(baseUrl + STTClient.getStartUrl()))
@@ -63,6 +64,7 @@ public class STTClient {
     public void stop(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
+                .header("player2-game-key", "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .timeout(Duration.ofSeconds(20))
                 .uri(URI.create(baseUrl + STTClient.getStopUrl()))
