@@ -10,11 +10,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class STTClient {
     private final HttpClient httpClient;
     private String baseUrl = "";
+    private String siteName = "";
 
     private STTClient(HttpClient httpClient) {
         this.httpClient = httpClient;
@@ -41,14 +43,21 @@ public class STTClient {
         return this;
     }
 
+    public STTClient siteName(final String siteName) {
+        this.siteName = siteName;
+        return this;
+    }
+
     public void start(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
-                .header("player2-game-key", "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"timeout\":30}"))
                 .timeout(Duration.ofSeconds(20))
-                .uri(URI.create(baseUrl + STTClient.getStartUrl()))
-                .build();
+                .uri(URI.create(baseUrl + STTClient.getStartUrl()));
+        if (Objects.equals(this.siteName, "player2")) {
+            builder.header("player2-game-key", "TouHouLittleMaid");
+        }
+        HttpRequest httpRequest = builder.build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((response, throwable) -> {
                     STTCallback callback = new STTCallback(consumer);
@@ -62,13 +71,15 @@ public class STTClient {
     }
 
     public void stop(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-                .header("player2-game-key", "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .timeout(Duration.ofSeconds(20))
-                .uri(URI.create(baseUrl + STTClient.getStopUrl()))
-                .build();
+                .uri(URI.create(baseUrl + STTClient.getStopUrl()));
+        if (Objects.equals(this.siteName, "player2")) {
+            builder.header("player2-game-key", "TouHouLittleMaid");
+        }
+        HttpRequest httpRequest = builder.build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((response, throwable) -> {
                     STTCallback callback = new STTCallback(consumer);

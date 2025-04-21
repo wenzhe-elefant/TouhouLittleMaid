@@ -12,10 +12,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public final class ChatClient {
     private final HttpClient httpClient;
+    private String siteName = "";
     private String baseUrl = "";
     private String apiKey = "";
     private ChatCompletion chatCompletion;
@@ -42,20 +44,27 @@ public final class ChatClient {
         return this;
     }
 
+    public ChatClient siteName(final String siteName) {
+        this.siteName = siteName;
+        return this;
+    }
+
     public ChatClient chat(final ChatCompletion chatCompletion) {
         this.chatCompletion = chatCompletion;
         return this;
     }
 
     public void handle(Consumer<ChatCompletionResponse> consumer, Consumer<Throwable> failConsumer) {
-        HttpRequest httpRequest = HttpRequest.newBuilder()
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + this.apiKey)
-                .header("player2-game-key", "TouHouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString(Service.GSON.toJson(chatCompletion)))
                 .timeout(Duration.ofSeconds(20))
-                .uri(URI.create(baseUrl + ChatCompletion.getUrl()))
-                .build();
+                .uri(URI.create(baseUrl + ChatCompletion.getUrl()));
+        if (Objects.equals(this.siteName, "player2")) {
+            builder.header("player2-game-key", "TouHouLittleMaid");
+        }
+        HttpRequest httpRequest = builder.build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((response, throwable) -> {
                     ChatCallback callback = new ChatCallback(consumer);
