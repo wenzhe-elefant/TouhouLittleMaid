@@ -81,7 +81,7 @@ public class STTChatKey {
                         public void run() {
                             sttStop(maids.get(0));
                         }
-                    }, 1500);
+                    }, 0);
                 }
             }
         }
