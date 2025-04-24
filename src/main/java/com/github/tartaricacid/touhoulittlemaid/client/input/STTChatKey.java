@@ -30,8 +30,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.github.tartaricacid.touhoulittlemaid.client.event.PressAIChatKeyEvent.CAN_CHAT_MAID_IDS;
 
@@ -44,8 +42,6 @@ public class STTChatKey {
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_X,
             "key.category.touhou_little_maid");
-
-    private static final Timer TIMER = new Timer();
 
     @SubscribeEvent
     public static void onSttChatPress(InputEvent.Key event) {
@@ -76,12 +72,7 @@ public class STTChatKey {
                 if (maids.isEmpty()) {
                     player.sendSystemMessage(Component.translatable("ai.touhou_little_maid.stt.content.no_maid_found"));
                 } else {
-                    TIMER.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            sttStop(maids.get(0));
-                        }
-                    }, 0);
+                    sttStop(maids.get(0));
                 }
             }
         }

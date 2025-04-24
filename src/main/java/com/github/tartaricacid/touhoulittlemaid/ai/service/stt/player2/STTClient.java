@@ -10,13 +10,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class STTClient {
+    private static final String PLAYER2_GAME_KEY = "player2-game-key";
     private final HttpClient httpClient;
     private String baseUrl = "";
-    private String siteName = "";
 
     private STTClient(HttpClient httpClient) {
         this.httpClient = httpClient;
@@ -43,20 +42,13 @@ public class STTClient {
         return this;
     }
 
-    public STTClient siteName(final String siteName) {
-        this.siteName = siteName;
-        return this;
-    }
-
     public void start(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
+                .header(PLAYER2_GAME_KEY, "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"timeout\":30}"))
                 .timeout(Duration.ofSeconds(20))
                 .uri(URI.create(baseUrl + STTClient.getStartUrl()));
-        if (Objects.equals(this.siteName, "player2")) {
-            builder.header("player2-game-key", "TouHouLittleMaid");
-        }
         HttpRequest httpRequest = builder.build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((response, throwable) -> {
@@ -73,12 +65,10 @@ public class STTClient {
     public void stop(Consumer<Message> consumer, Consumer<Throwable> failConsumer) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
+                .header(PLAYER2_GAME_KEY, "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .timeout(Duration.ofSeconds(20))
                 .uri(URI.create(baseUrl + STTClient.getStopUrl()));
-        if (Objects.equals(this.siteName, "player2")) {
-            builder.header("player2-game-key", "TouHouLittleMaid");
-        }
         HttpRequest httpRequest = builder.build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((response, throwable) -> {

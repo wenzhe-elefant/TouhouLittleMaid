@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.Map;
 
 public final class Service {
     public static final Gson GSON = new Gson();
@@ -34,15 +35,14 @@ public final class Service {
             .proxy(new ConfigProxySelector(AIConfig.STT_PROXY_ADDRESS))
             .build();
 
-    public static ChatClient
-
-    getChatClient(Site site) {
+    public static ChatClient getChatClient(Site site) {
         String chatApiKey = site.getApiKey();
         String chatBaseUrl = site.getUrl();
+        Map<String, String> extraHeader = site.getExtraHeader();
         return ChatClient.create(CHAT_HTTP_CLIENT)
-                .siteName(site.getType())
                 .apiKey(chatApiKey)
-                .baseUrl(chatBaseUrl);
+                .baseUrl(chatBaseUrl)
+                .extraHeader(extraHeader);
     }
 
     @Nullable
@@ -93,7 +93,6 @@ public final class Service {
 
     public static STTClient getSttClient(String url) {
         return STTClient.create(STT_HTTP_CLIENT)
-                .baseUrl(url)
-                .siteName("player2");
+                .baseUrl(url);
     }
 }
