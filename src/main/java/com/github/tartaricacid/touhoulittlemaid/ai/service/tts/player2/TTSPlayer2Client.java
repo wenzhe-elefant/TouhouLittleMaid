@@ -50,7 +50,7 @@ public class TTSPlayer2Client implements TTSClient<TTSPlayer2Request> {
                 .header(PLAYER2_GAME_KEY, "TouhouLittleMaid")
                 .POST(HttpRequest.BodyPublishers.ofString(Service.GSON.toJson(request)))
                 .timeout(Duration.ofSeconds(20))
-                .uri(URI.create(baseUrl))
+                .uri(URI.create(baseUrl + "/speak"))
                 .build();
         httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
                 .whenComplete((response, throwable) -> {
