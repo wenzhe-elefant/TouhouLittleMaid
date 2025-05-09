@@ -1,6 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.client.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.ai.manager.setting.AvailableSites;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.Service;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.misc.Player2HeartbeatManager;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.AnimationRegister;
 import com.github.tartaricacid.touhoulittlemaid.client.event.ShowOptifineScreen;
@@ -17,6 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.event.level.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -37,6 +41,11 @@ public class ClientSetupEvent {
         ImmersiveMelodiesCompat.init();
         OculusCompat.init();
         SodiumCompat.init();
+
+        Player2HeartbeatManager heartbeatManager = Service.getHeartbeatManager(AvailableSites.getFirstAvailableChatSite());
+        if (heartbeatManager != null) {
+            heartbeatManager.startHeartbeats();
+        }
     }
 
     @SubscribeEvent

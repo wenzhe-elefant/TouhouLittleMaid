@@ -1,5 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.ai.service;
 
+import java.net.http.HttpClient;
+import java.time.Duration;
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.HistoryChat;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.MaidAIChatManager;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.setting.Site;
@@ -7,6 +13,7 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.ChatClien
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ChatCompletion;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ResponseFormat;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.Role;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.misc.Player2HeartbeatManager;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.stt.STTClient;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.stt.STTFactory;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSClient;
@@ -15,11 +22,6 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSRequest;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.util.CappedQueue;
 import com.google.gson.Gson;
-import org.jetbrains.annotations.Nullable;
-
-import java.net.http.HttpClient;
-import java.time.Duration;
-import java.util.Map;
 
 public final class Service {
     public static final Gson GSON = new Gson();
@@ -44,6 +46,13 @@ public final class Service {
                 .apiKey(chatApiKey)
                 .baseUrl(chatBaseUrl)
                 .extraHeader(extraHeader);
+    }
+
+    public static Player2HeartbeatManager getHeartbeatManager(Site site) {
+        if ( (Boolean)site.getExtraArgs().getOrDefault("use-heartbeat", false)) {
+            return Player2HeartbeatManager.create(CHAT_HTTP_CLIENT).baseUrl(site.getUrl());
+        }
+        return null;
     }
 
     @Nullable
