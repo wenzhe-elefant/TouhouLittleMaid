@@ -58,9 +58,15 @@ public final class MaidAIChatManager extends MaidAIChatData {
         } else {
             TTSClient ttsClient = Service.getTtsClient(site);
             String ttsLang = "en";
-            String[] split = this.getTtsLanguage().split("_");
-            if (split.length >= 2) {
-                ttsLang = split[0];
+            if (TTSApiType.PLAYER2.getName().equals(site.getApiType())) {
+                // Use the entire string
+                // TODO: Default language "en_us" is invalid here. Jank solution would be to capitalize second half but that depends on spec.
+                ttsLang = this.getTtsLanguage();
+            } else {
+                String[] split = this.getTtsLanguage().split("_");
+                if (split.length >= 2) {
+                    ttsLang = split[0];
+                }
             }
             TTSRequest ttsRequest = Service.getTtsRequest(site, ttsText, ttsLang, this.getTtsModel());
             ttsClient.request(ttsRequest).handle(data -> onPlaySoundSync(chatText, (byte[]) data),

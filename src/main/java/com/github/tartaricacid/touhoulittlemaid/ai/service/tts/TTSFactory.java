@@ -63,7 +63,7 @@ public final class TTSFactory {
         if (site.getApiType().equals(TTSApiType.PLAYER2.getName())) {
             return TTSPlayer2Request.create()
                     .setText(ttsText)
-                    .setVoiceLanguage((ttsLang == null || ttsLang.length() == 0) ? "en_US" : ttsLang)
+                    .setVoiceLanguage((ttsLang == null || ttsLang.isEmpty()) ? "en_US" : ttsLang)
                     .setVoiceGender("female")
                     .setSpeed(1)
                     .setPlayInApp(true)
