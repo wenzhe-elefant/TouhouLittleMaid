@@ -7,9 +7,12 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.fishaudio.request
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.fishaudio.request.TTSFishAudioRequest;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.gptsovits.TTSGptSovitsClient;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.gptsovits.request.TTSGptSovitsRequest;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.player2.TTSPlayer2Client;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.player2.request.TTSPlayer2Request;
 
 import javax.annotation.Nullable;
 import java.net.http.HttpClient;
+import java.util.Arrays;
 
 public final class TTSFactory {
     @Nullable
@@ -27,6 +30,12 @@ public final class TTSFactory {
             String ttsBaseUrl = site.getUrl();
             return TTSGptSovitsClient.create(client)
                     .apiKey(ttsApiKey)
+                    .baseUrl(ttsBaseUrl);
+        }
+
+        if (site.getApiType().equals(TTSApiType.PLAYER2.getName())) {
+            String ttsBaseUrl = site.getUrl();
+            return TTSPlayer2Client.create(client)
                     .baseUrl(ttsBaseUrl);
         }
 
@@ -49,6 +58,16 @@ public final class TTSFactory {
                     .setText(ttsText)
                     .setTextLang(ttsLang)
                     .setSiteExtraArgs(site);
+        }
+
+        if (site.getApiType().equals(TTSApiType.PLAYER2.getName())) {
+            return TTSPlayer2Request.create()
+                    .setText(ttsText)
+                    .setLanguage(ttsLang)
+                    .setSpeed(1)
+                    .setPlayInApp(true)
+                    // TODO: Figure out where to get this from
+                    .setVoiceIds(Arrays.asList());
         }
 
         return null;
