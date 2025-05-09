@@ -48,20 +48,17 @@ public class Player2HeartbeatManager {
     }
 
     public void startHeartbeats() {
-        System.out.println("ASDF START");
         if (heartbeatTaskHandle != null) {
             heartbeatTaskHandle.cancel(true);
             heartbeatScheduler.shutdown();
             heartbeatTaskHandle = null;
         }
         heartbeatTaskHandle = heartbeatScheduler.scheduleAtFixedRate(() -> {
-            System.out.println("ASDF heartbeat");
             sendHeartbeat();
         }, 5, 60, TimeUnit.SECONDS);
 
     }
     public void stopHeartbeats() {
-        System.out.println("ASDF STOP");
         if (heartbeatTaskHandle != null) {
             heartbeatTaskHandle.cancel(true);
             heartbeatScheduler.shutdown();
