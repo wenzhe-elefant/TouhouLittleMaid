@@ -39,8 +39,6 @@ public final class TouhouLittleMaid {
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     public static List<ILittleMaid> EXTENSIONS = Lists.newArrayList();
 
-    private static Player2HeartbeatManager heartbeatManager;
-
     public TouhouLittleMaid() {
         initRegister(FMLJavaModLoadingContext.get().getModEventBus());
         InitTrigger.init();
@@ -49,12 +47,6 @@ public final class TouhouLittleMaid {
         ChatBubbleManger.initDefaultChat();
 
         AquacultureCompat.init();
-
-        // Unsure where to put this structurally, but functionally this is correct
-        heartbeatManager = Service.getHeartbeatManager(AvailableSites.getFirstAvailableChatSite());
-        if (heartbeatManager != null) {
-            heartbeatManager.startHeartbeats();
-        }
     }
 
     private static void initRegister(IEventBus eventBus) {

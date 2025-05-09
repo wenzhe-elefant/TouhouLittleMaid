@@ -35,7 +35,7 @@ public class Player2HeartbeatManager {
     }
 
     private static String getHeartbeatUrl() {
-        return "/heartbeat";
+        return "/health";
     }
 
     public Player2HeartbeatManager baseUrl(final String baseUrl) {
@@ -54,7 +54,11 @@ public class Player2HeartbeatManager {
             heartbeatTaskHandle = null;
         }
         heartbeatTaskHandle = heartbeatScheduler.scheduleAtFixedRate(() -> {
-            sendHeartbeat();
+            try {
+                sendHeartbeat();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }, 5, 60, TimeUnit.SECONDS);
 
     }
@@ -71,7 +75,7 @@ public class Player2HeartbeatManager {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
                 .header(PLAYER2_GAME_KEY, "TouhouLittleMaid")
-                .POST(HttpRequest.BodyPublishers.noBody())
+                .GET()
                 .timeout(Duration.ofSeconds(2))
                 .uri(URI.create(baseUrl + Player2HeartbeatManager.getHeartbeatUrl()));
         HttpRequest httpRequest = builder.build();
@@ -80,6 +84,8 @@ public class Player2HeartbeatManager {
                 JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
                 if (json.has("client_version")) {
                     System.out.println("Heartbeat Successful");
+                } else {
+                    System.out.println("Heartbeat failed:" + throwable);
                 }
             });
     }
