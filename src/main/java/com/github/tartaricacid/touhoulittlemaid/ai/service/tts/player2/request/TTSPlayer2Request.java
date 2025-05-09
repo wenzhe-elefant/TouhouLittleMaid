@@ -1,13 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.ai.service.tts.player2.request;
 
-import com.github.tartaricacid.touhoulittlemaid.ai.manager.setting.Site;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSRequest;
-import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class TTSPlayer2Request implements TTSRequest {
     @SerializedName("play_in_app")
@@ -16,8 +12,11 @@ public class TTSPlayer2Request implements TTSRequest {
     @SerializedName("speed")
     private float speed;
 
-    @SerializedName("language")
-    private String language;
+    @SerializedName("voice_language")
+    private String voiceLanguage;
+
+    @SerializedName("voice_gender")
+    private String voiceGender;
 
     @SerializedName("text")
     private String text;
@@ -44,8 +43,12 @@ public class TTSPlayer2Request implements TTSRequest {
         this.playInApp = playInApp;
         return this;
     }
-    public TTSPlayer2Request setLanguage(String language) {
-        this.language = language;
+    public TTSPlayer2Request setVoiceLanguage(String voiceLanguage) {
+        this.voiceLanguage = voiceLanguage;
+        return this;
+    }
+    public TTSPlayer2Request setVoiceGender(String voiceGender) {
+        this.voiceGender = voiceGender;
         return this;
     }
     public TTSPlayer2Request setVoiceIds(List<String> voiceIds) {
