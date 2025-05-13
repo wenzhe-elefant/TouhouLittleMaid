@@ -74,10 +74,10 @@ public final class TTSFactory {
 
         if (site.getApiType().equals(TTSApiType.PLAYER2.getName())) {
 
-            TTSLanguage defaultLang = TTSLanguage.JAPANESE;
+            TTSLanguage defaultLang = TTSLanguage.AMERICAN_ENGLISH;
 
             // make sure language is supported by player2
-            Optional<TTSLanguage> lang = TTSLanguage.fromId(ttsLang);
+            Optional<TTSLanguage> lang = TTSLanguage.fromIdApproximate(ttsLang);
             if (lang.isEmpty()) {
                 if (ttsLang != null) {
                     if (!ranFailedTTSMessage) {
