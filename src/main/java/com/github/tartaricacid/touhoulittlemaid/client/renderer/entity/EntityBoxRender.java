@@ -47,7 +47,7 @@ public class EntityBoxRender extends EntityRenderer<EntityBox> {
     }
 
     private void addBoxTexture(int index) {
-        String fileName = String.format("textures/entity/box/cake_box_%s.png", index);
+        String fileName = String.format("textures/bedrock/entity/cake_box/cake_box_%s.png", index);
         texturesGroup.add(new ResourceLocation(TouhouLittleMaid.MOD_ID, fileName));
     }
 }

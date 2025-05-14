@@ -34,7 +34,7 @@ import java.util.Objects;
 import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.MAID_BANNER;
 
 public class LayerMaidBanner extends RenderLayer<Mob, BedrockModel<Mob>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_banner.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_banner.png");
     private final EntityMaidRenderer renderer;
     private final SimpleBedrockModel<EntityMaid> bannerModel;
 

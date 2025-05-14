@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class TileEntityAltarRenderer implements BlockEntityRenderer<TileEntityAltar> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/block/altar.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/altar.png");
     private final SimpleBedrockModel<? extends Entity> model;
 
     public TileEntityAltarRenderer(BlockEntityRendererProvider.Context render) {

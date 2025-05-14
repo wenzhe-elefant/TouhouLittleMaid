@@ -72,7 +72,7 @@ public class EnderChestBackpack extends IMaidBackpack {
     @Override
     @OnlyIn(Dist.CLIENT)
     public ResourceLocation getBackpackTexture() {
-        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/ender_chest_backpack.png");
+        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/backpack/ender_chest_backpack.png");
     }
 
     @OnlyIn(Dist.CLIENT)

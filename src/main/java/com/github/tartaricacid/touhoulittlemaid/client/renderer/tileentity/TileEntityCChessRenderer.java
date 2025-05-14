@@ -27,8 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 public class TileEntityCChessRenderer implements BlockEntityRenderer<TileEntityCChess> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/cchess.png");
-    private static final ResourceLocation PIECES_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/cchess_pieces.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/cchess.png");
+    private static final ResourceLocation PIECES_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/cchess_pieces.png");
     private static final int TIPS_RENDER_DISTANCE = 16;
     private static final int PIECE_RENDER_DISTANCE = 24;
     private final Font font;

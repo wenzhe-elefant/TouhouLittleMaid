@@ -23,11 +23,11 @@ import java.util.Objects;
 import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.TOMBSTONE;
 
 public class EntityTombstoneRenderer extends EntityRenderer<EntityTombstone> {
-    private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/tombstone/tombstone.png");
-    private static final ResourceLocation THE_NETHER_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/tombstone/tombstone_the_nether.png");
-    private static final ResourceLocation THE_END_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/tombstone/tombstone_the_end.png");
-    private static final ResourceLocation TWILIGHT_FOREST_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/tombstone/tombstone_twilight_forest.png");
-    private static final ResourceLocation AETHER_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/tombstone/tombstone_aether.png");
+    private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/tombstone/tombstone_overworld.png");
+    private static final ResourceLocation THE_NETHER_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/tombstone/tombstone_the_nether.png");
+    private static final ResourceLocation THE_END_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/tombstone/tombstone_the_end.png");
+    private static final ResourceLocation TWILIGHT_FOREST_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/tombstone/tombstone_twilight_forest.png");
+    private static final ResourceLocation AETHER_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/tombstone/tombstone_aether.png");
 
     private static final ResourceLocation TWILIGHT_FOREST_LEVEL_ID = new ResourceLocation("twilightforest", "twilight_forest");
     private final static ResourceLocation AETHER_LEVEL_ID = new ResourceLocation("aether", "the_aether");

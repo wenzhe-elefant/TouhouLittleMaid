@@ -18,7 +18,7 @@ import java.util.Objects;
 import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.REIMU_YUKKURI;
 
 public class EntityYukkuriSlimeRender extends MobRenderer<Slime, SimpleBedrockModel<Slime>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/yukkuri.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/reimu_yukkuri.png");
     private final SlimeRenderer vanillaRender;
 
     public EntityYukkuriSlimeRender(EntityRendererProvider.Context context) {

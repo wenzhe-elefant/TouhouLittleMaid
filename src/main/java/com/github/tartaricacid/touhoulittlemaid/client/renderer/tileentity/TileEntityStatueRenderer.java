@@ -30,7 +30,7 @@ import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockMo
 import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clearMaidDataResidue;
 
 public class TileEntityStatueRenderer implements BlockEntityRenderer<TileEntityStatue> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/statue_base.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/statue_base.png");
     private final SimpleBedrockModel<Entity> BASE_MODEL;
 
     public TileEntityStatueRenderer(BlockEntityRendererProvider.Context context) {
