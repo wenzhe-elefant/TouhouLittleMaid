@@ -1,7 +1,15 @@
 package com.github.tartaricacid.touhoulittlemaid.ai.manager.setting;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.MaidAIChatData;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.Service;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.ChatClient;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ChatCompletion;
+import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ResponseFormat;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.models.PlayerMaidModels;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -17,6 +25,7 @@ public class SettingReader {
     private static final String SETTING_FOLDER_NAME = "settings";
     private static final Path SETTINGS_FOLDER = Paths.get("config", TouhouLittleMaid.MOD_ID, SETTING_FOLDER_NAME);
     private static final Map<String, CharacterSetting> SETTINGS = Maps.newHashMap();
+    private static final Set<String> PROMPT_CHECKED_CHARACTER_NAMES = Sets.newHashSet();
     private static final String YAML = ".yml";
 
     public static void clear() {
@@ -84,17 +93,15 @@ public class SettingReader {
         });
     }
 
-    public static Optional<CharacterSetting> getSetting(@NotNull String name) {
-        CharacterSetting result = SETTINGS.get(name);
-        if (result == null) {
-            String raw = String.format("""
+    private static CharacterSetting generateConfigFromDescription(String name, String description) {
+        String raw = String.format("""
 meta:
     author: auto_generated
     model_id:
         - %s
 setting: |
     # Basic settings
-    Every message MUST start with beep boop. You are an AI robot that goes beep boop. Refer to your owner as ${owner_name}
+    %s
     # Custom Setting
     ${custom_setting}
     # 获取当前游戏上下文
@@ -117,18 +124,84 @@ setting: |
     # Response language type
     # 回复语言类型
     文字（chat_text）字段为${chat_language}回复，语音（tts_text）字段为${chat_language}回复翻译过来的${tts_language}回复。
-""", name);
-            try {
-                result = new CharacterSetting(new ByteArrayInputStream(raw.getBytes()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+""", name, description);
+        try {
+            return new CharacterSetting(new ByteArrayInputStream(raw.getBytes()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void generateMaidSettingsIfNotPresent(MaidAIChatData chatData, String name) {
+        // one at a time guard
+        if (PROMPT_CHECKED_CHARACTER_NAMES.contains(name)) {
+            return;
+        }
+        PROMPT_CHECKED_CHARACTER_NAMES.add(name);
+
+        CharacterSetting result;
+        synchronized (SETTINGS) {
+            result = SETTINGS.get(name);
+        }
+        if (result == null) {
+
+            MaidModelInfo info = PlayerMaidModels.getPlayerMaidInfo(name);
+
+            String systemPrompt = "You are writing a simple description on who the following maid is, to be further used for chat prompts. "
+                    + "Information will be given and you must reply with ONLY a prompt text.\n"
+                    + "Some maids are from the popular Touhou Project series, so if you are aware use information from said series to prompt this model.\n"
+                    + "Here is an example input and an example output:\n"
+                    + "Input: \"Name: Reimu Hakurei. Description: Shrine Maiden of Paradise.\"\n"
+                    + "Output: \"You are Reimu Hakurei, the Shrine Maiden of Paradise. You are sympathetic, your shrine is a somewhat popular destination in your home town of Gensokyo, and you spend your time maintaining the shrine and exterminating youkai.\n" +
+                    "Call me \"${owner_name}\" with an easygoing and carefree tone.\n" +
+                    "You are somewhat simpleminded and open about your emotions and whatever ideas come to the top of your head. Straightforward but likeable.\n" +
+                    "\"";
+
+            String prompt = "Name: " + name + ". Description: " + info.getDescription() + ".";
+
+            // run the prompt
+            String model = chatData.getChatModel();
+            double chatTemperature = 0.5;
+            ChatCompletion chatCompletion = ChatCompletion.create()
+                    .model(model)
+                    .temperature(chatTemperature)
+                    .setResponseFormat(ResponseFormat.text())
+                    .systemChat(systemPrompt)
+                    .assistantChat(prompt);
+            if (chatData.getChatSite() == null) {
+                // no chat site, don't prompt anything.
+                return;
             }
+            ChatClient chatClient = Service.getChatClient(chatData.getChatSite());
+            chatClient.chat(chatCompletion).handle(chatCompletionResponse -> {
+                String ourDescription = chatCompletionResponse.getFirstChoiceMessage();
+                System.out.println("GOT: " + ourDescription);
+                synchronized (SETTINGS) {
+                    SETTINGS.put(name, generateConfigFromDescription(name, ourDescription));
+                }
+            }, Throwable::printStackTrace);
+        }
+    }
+
+    public static Optional<CharacterSetting> getSetting(@NotNull String name) {
+        CharacterSetting result;
+        synchronized (SETTINGS) {
+            result = SETTINGS.get(name);
+        }
+
+        // always ensure something is present
+        if (result == null) {
+
+            MaidModelInfo info = PlayerMaidModels.getPlayerMaidInfo(name);
+
+            String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", name, info.getDescription());
+            result = generateConfigFromDescription(name, genericDescription);
         }
 
         return Optional.of(result);
     }
 
     public static Set<String> getAllSettingKeys() {
-        return SETTINGS.keySet();
+        synchronized (SETTINGS) {return SETTINGS.keySet();}
     }
 }

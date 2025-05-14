@@ -4,6 +4,7 @@ import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPa
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.MaidAIChatManager;
+import com.github.tartaricacid.touhoulittlemaid.ai.manager.setting.SettingReader;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
@@ -1817,6 +1818,11 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     }
 
     public void setModelId(String modelId) {
+
+        System.out.println("ASDF set model id: " + modelId);
+        // ensure default setting is generated
+        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
+
         this.entityData.set(DATA_MODEL_ID, modelId);
     }
 
