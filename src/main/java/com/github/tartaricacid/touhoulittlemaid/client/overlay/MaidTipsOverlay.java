@@ -101,7 +101,7 @@ public class MaidTipsOverlay implements IGuiOverlay {
         if (!ENABLE_AI_CHAT_TIP.get()) {
             return false;
         }
-        return maid.isOwnedBy(player) && PressAIChatKeyEvent.CAN_CHAT_MAID_IDS.contains(maid.getModelId());
+        return maid.isOwnedBy(player);
     }
 
     private static MutableComponent checkSpecialTips(ItemStack mainhandItem, EntityMaid maid, LocalPlayer player) {

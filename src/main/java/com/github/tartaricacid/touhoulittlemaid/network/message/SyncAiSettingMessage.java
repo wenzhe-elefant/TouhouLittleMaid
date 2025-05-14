@@ -55,8 +55,6 @@ public class SyncAiSettingMessage {
 
     @OnlyIn(Dist.CLIENT)
     private static void handle(SyncAiSettingMessage message) {
-        PressAIChatKeyEvent.CAN_CHAT_MAID_IDS.clear();
-        PressAIChatKeyEvent.CAN_CHAT_MAID_IDS.addAll(message.settings);
         AIChatScreen.CLIENT_CHAT_SITES.clear();
         AIChatScreen.CLIENT_CHAT_SITES.putAll(message.chatSites);
         AIChatScreen.CLIENT_TTS_SITES.clear();

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
@@ -84,7 +85,47 @@ public class SettingReader {
     }
 
     public static Optional<CharacterSetting> getSetting(@NotNull String name) {
-        return Optional.ofNullable(SETTINGS.get(name));
+        CharacterSetting result = SETTINGS.get(name);
+        if (result == null) {
+            String raw = String.format("""
+meta:
+    author: auto_generated
+    model_id:
+        - %s
+setting: |
+    # Basic settings
+    Every message MUST start with beep boop. You are an AI robot that goes beep boop. Refer to your owner as ${owner_name}
+    # Custom Setting
+    ${custom_setting}
+    # 获取当前游戏上下文
+    当前的时间为：${game_time}，当前的天气是：${weather}。
+    你所在的维度为：${dimension}，你所处的生物群系为：${biome}。
+    你的右手拿着：${mainhand_item}，你的左手拿着：${offhand_item}。
+    你背包内有这些物品：${inventory_items}，你穿戴的护甲：${armor_items}。
+    你的当前血量是：${healthy}，你身上有这些药水效果：${effects}。
+    我的当前血量是：${owner_healthy}。
+
+    # Output character limit
+    # 输出限制
+    回复长度建议限制在64个字符以内。
+
+    # Format requirements
+    # 格式要求
+    回复中不包含行为或表情类的旁白性质的词语。
+    输出格式为 JSON 格式：${output_json_format}。
+
+    # Response language type
+    # 回复语言类型
+    文字（chat_text）字段为${chat_language}回复，语音（tts_text）字段为${chat_language}回复翻译过来的${tts_language}回复。
+""", name);
+            try {
+                result = new CharacterSetting(new ByteArrayInputStream(raw.getBytes()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return Optional.of(result);
     }
 
     public static Set<String> getAllSettingKeys() {
