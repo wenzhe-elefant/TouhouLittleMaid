@@ -19,7 +19,7 @@ import java.util.Objects;
 import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.MARISA_YUKKURI;
 
 public class EntityMarisaYukkuriSlimeRender extends MobRenderer<MagmaCube, SimpleBedrockModel<MagmaCube>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/marisa_yukkuri.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/marisa_yukkuri.png");
     private final MagmaCubeRenderer vanillaRender;
 
     public EntityMarisaYukkuriSlimeRender(EntityRendererProvider.Context context) {

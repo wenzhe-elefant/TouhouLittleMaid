@@ -73,7 +73,7 @@ public class SmallBackpack extends IMaidBackpack {
     @Override
     @OnlyIn(Dist.CLIENT)
     public ResourceLocation getBackpackTexture() {
-        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_backpack_small.png");
+        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/backpack/small_backpack.png");
     }
 
     @OnlyIn(Dist.CLIENT)

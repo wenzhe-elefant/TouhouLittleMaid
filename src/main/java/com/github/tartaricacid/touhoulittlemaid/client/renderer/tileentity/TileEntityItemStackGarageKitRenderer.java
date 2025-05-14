@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clearMaidDataResidue;
 
 public class TileEntityItemStackGarageKitRenderer extends BlockEntityWithoutLevelRenderer {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/statue_base.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/statue_base.png");
     private static SimpleBedrockModel<Entity> BASE_MODEL;
 
     public TileEntityItemStackGarageKitRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
@@ -45,6 +45,9 @@ public class TileEntityItemStackGarageKitRenderer extends BlockEntityWithoutLeve
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        if (BASE_MODEL == null) {
+            return;
+        }
         poseStack.pushPose();
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.translate(1, 1.5, 1);

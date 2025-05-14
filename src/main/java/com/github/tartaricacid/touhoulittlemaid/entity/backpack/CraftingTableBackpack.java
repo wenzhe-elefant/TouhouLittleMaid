@@ -78,7 +78,7 @@ public class CraftingTableBackpack extends IMaidBackpack {
     @Override
     @OnlyIn(Dist.CLIENT)
     public ResourceLocation getBackpackTexture() {
-        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/crafting_table_backpack.png");
+        return new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/backpack/crafting_table_backpack.png");
     }
 
     @Override

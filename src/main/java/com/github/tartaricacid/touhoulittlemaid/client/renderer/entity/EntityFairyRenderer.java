@@ -15,24 +15,24 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 public class EntityFairyRenderer extends MobRenderer<EntityFairy, SimpleBedrockModel<EntityFairy>> {
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_1.png");
-    private static final ResourceLocation TEXTURE_2 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_2.png");
-    private static final ResourceLocation TEXTURE_3 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_3.png");
-    private static final ResourceLocation TEXTURE_4 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_4.png");
-    private static final ResourceLocation TEXTURE_5 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_5.png");
-    private static final ResourceLocation TEXTURE_6 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_6.png");
-    private static final ResourceLocation TEXTURE_7 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_7.png");
-    private static final ResourceLocation TEXTURE_8 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_8.png");
-    private static final ResourceLocation TEXTURE_9 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_9.png");
-    private static final ResourceLocation TEXTURE_10 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_10.png");
-    private static final ResourceLocation TEXTURE_11 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_11.png");
-    private static final ResourceLocation TEXTURE_12 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_12.png");
-    private static final ResourceLocation TEXTURE_13 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_13.png");
-    private static final ResourceLocation TEXTURE_14 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_14.png");
-    private static final ResourceLocation TEXTURE_15 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_15.png");
-    private static final ResourceLocation TEXTURE_16 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_16.png");
-    private static final ResourceLocation TEXTURE_17 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/entity/maid_fairy/maid_fairy_17.png");
+    private static final ResourceLocation TEXTURE_0 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_0.png");
+    private static final ResourceLocation TEXTURE_1 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_1.png");
+    private static final ResourceLocation TEXTURE_2 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_2.png");
+    private static final ResourceLocation TEXTURE_3 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_3.png");
+    private static final ResourceLocation TEXTURE_4 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_4.png");
+    private static final ResourceLocation TEXTURE_5 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_5.png");
+    private static final ResourceLocation TEXTURE_6 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_6.png");
+    private static final ResourceLocation TEXTURE_7 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_7.png");
+    private static final ResourceLocation TEXTURE_8 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_8.png");
+    private static final ResourceLocation TEXTURE_9 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_9.png");
+    private static final ResourceLocation TEXTURE_10 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_10.png");
+    private static final ResourceLocation TEXTURE_11 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_11.png");
+    private static final ResourceLocation TEXTURE_12 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_12.png");
+    private static final ResourceLocation TEXTURE_13 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_13.png");
+    private static final ResourceLocation TEXTURE_14 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_14.png");
+    private static final ResourceLocation TEXTURE_15 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_15.png");
+    private static final ResourceLocation TEXTURE_16 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_16.png");
+    private static final ResourceLocation TEXTURE_17 = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/maid_fairy/maid_fairy_17.png");
 
     private final NewEntityFairyRenderer newEntityFairyRenderer;
 

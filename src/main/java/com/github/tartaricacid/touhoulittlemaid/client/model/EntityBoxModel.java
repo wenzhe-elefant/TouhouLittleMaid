@@ -4,6 +4,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.model;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBox;
+import net.minecraft.util.Mth;
 
 import java.io.InputStream;
 
@@ -32,18 +33,20 @@ public class EntityBoxModel extends SimpleBedrockModel<EntityBox> {
             x2.xRot = 0;
             z1.zRot = 0;
             z2.zRot = 0;
-        } else if (stage > EntityBox.SECOND_STAGE) {
+        } else if (stage == EntityBox.SECOND_STAGE) {
             top.visible = false;
             x1.xRot = 0;
             x2.xRot = 0;
             z1.zRot = 0;
             z2.zRot = 0;
         } else {
+            long timeStamp = System.currentTimeMillis() - entityIn.thirdStageTimeStamp;
+            float progress = Mth.clamp((float) timeStamp / 50f, 0.0f, 60f);
             top.visible = false;
-            x1.xRot = 0.023998277f * (EntityBox.SECOND_STAGE - stage);
-            x2.xRot = -0.023998277f * (EntityBox.SECOND_STAGE - stage);
-            z1.zRot = 0.023998277f * (EntityBox.SECOND_STAGE - stage);
-            z2.zRot = -0.023998277f * (EntityBox.SECOND_STAGE - stage);
+            x1.xRot = 0.023998277f * progress;
+            x2.xRot = -0.023998277f * progress;
+            z1.zRot = 0.023998277f * progress;
+            z2.zRot = -0.023998277f * progress;
         }
     }
 }
