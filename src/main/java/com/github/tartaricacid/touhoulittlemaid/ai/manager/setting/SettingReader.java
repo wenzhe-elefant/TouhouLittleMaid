@@ -151,6 +151,7 @@ setting: |
         try {
             return new CharacterSetting(new ByteArrayInputStream(raw.getBytes()));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -195,9 +196,11 @@ setting: |
                 // no chat site, don't prompt anything.
                 return;
             }
+            System.out.println("Character Profile Prompt Input: " + prompt);
             ChatClient chatClient = Service.getChatClient(chatData.getChatSite());
             chatClient.chat(chatCompletion).handle(chatCompletionResponse -> {
                 String ourDescription = chatCompletionResponse.getFirstChoiceMessage();
+                System.out.println("Character Profile Prompt Output for " + modelId + ": " + ourDescription);
                 synchronized (SETTINGS) {
                     try {
                         SETTINGS.put(modelId, generateConfigFromDescription(modelId, ourDescription));
@@ -222,6 +225,7 @@ setting: |
 
             String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", I18n.get(I18n.get(ParseI18n.getI18nKey(info.getName()))), String.join(", ", info.getDescription().stream().map(d -> I18n.get(I18n.get(ParseI18n.getI18nKey(d)))).toList()));
             result = generateConfigFromDescription(modelId, genericDescription);
+            SETTINGS.put(modelId, result);
         }
 
         return Optional.of(result);

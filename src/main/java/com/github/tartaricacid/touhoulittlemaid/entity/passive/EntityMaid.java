@@ -480,6 +480,11 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
 
     @Override
     public void tick() {
+
+        // Only try to generate our settings if we're an active/alive entity.
+        // This will only trigger further logic once per modelId
+        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
+
         if (!MinecraftForge.EVENT_BUS.post(new MaidTickEvent(this))) {
             super.tick();
             maidBauble.fireEvent((b, s) -> {
