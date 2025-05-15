@@ -6,10 +6,14 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.Service;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.ChatClient;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ChatCompletion;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.request.ResponseFormat;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.PlayerMaidModels;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
+import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -29,7 +33,9 @@ public class SettingReader {
     private static final String YAML = ".yml";
 
     public static void clear() {
-        SETTINGS.clear();
+        synchronized (SETTINGS) {
+            SETTINGS.clear();
+        }
     }
 
     public static void reloadSettings() {
@@ -71,7 +77,9 @@ public class SettingReader {
                 TouhouLittleMaid.LOGGER.debug("Loading settings from {}", entryName);
                 try (InputStream inputStream = zipFile.getInputStream(entry)) {
                     CharacterSetting setting = new CharacterSetting(inputStream);
-                    setting.getModelId().forEach(id -> SETTINGS.put(id, setting));
+                    synchronized (SETTINGS) {
+                        setting.getModelId().forEach(id -> SETTINGS.put(id, setting));
+                    }
                 } catch (IOException e) {
                     TouhouLittleMaid.LOGGER.error("Failed to read settings from {}", entryName, e);
                 }
@@ -86,14 +94,28 @@ public class SettingReader {
                 String fileName = file.getFileName().toString();
                 if (fileName.endsWith(YAML)) {
                     CharacterSetting setting = new CharacterSetting(file.toFile());
-                    setting.getModelId().forEach(id -> SETTINGS.put(id, setting));
+                    synchronized (SETTINGS) {
+                        setting.getModelId().forEach(id -> SETTINGS.put(id, setting));
+                    }
                 }
                 return super.visitFile(file, attributes);
             }
         });
     }
 
-    private static CharacterSetting generateConfigFromDescription(String name, String description) {
+    private static CharacterSetting generateConfigFromDescription(String modelId, String description) {
+
+        // Make indentation work by removing it entirely.
+        description = description.replace("\n", " ");
+        if (description.startsWith("Your reply: ")) {
+            description = description.substring("Your reply: ".length());
+        }
+        // remove quotes
+        if (description.startsWith("\"") && description.endsWith("\"")) {
+            description = description.substring(1, description.length() - 1);
+        }
+        description = description.trim();
+
         String raw = String.format("""
 meta:
     author: auto_generated
@@ -124,7 +146,8 @@ setting: |
     # Response language type
     # 回复语言类型
     文字（chat_text）字段为${chat_language}回复，语音（tts_text）字段为${chat_language}回复翻译过来的${tts_language}回复。
-""", name, description);
+""", modelId, description);
+
         try {
             return new CharacterSetting(new ByteArrayInputStream(raw.getBytes()));
         } catch (IOException e) {
@@ -132,32 +155,32 @@ setting: |
         }
     }
 
-    public static void generateMaidSettingsIfNotPresent(MaidAIChatData chatData, String name) {
+    public static void generateMaidSettingsIfNotPresent(MaidAIChatData chatData, String modelId) {
         // one at a time guard
-        if (PROMPT_CHECKED_CHARACTER_NAMES.contains(name)) {
+        if (PROMPT_CHECKED_CHARACTER_NAMES.contains(modelId)) {
             return;
         }
-        PROMPT_CHECKED_CHARACTER_NAMES.add(name);
+        PROMPT_CHECKED_CHARACTER_NAMES.add(modelId);
 
         CharacterSetting result;
         synchronized (SETTINGS) {
-            result = SETTINGS.get(name);
+            result = SETTINGS.get(modelId);
         }
         if (result == null) {
 
-            MaidModelInfo info = PlayerMaidModels.getPlayerMaidInfo(name);
-
             String systemPrompt = "You are writing a simple description on who the following maid is, to be further used for chat prompts. "
-                    + "Information will be given and you must reply with ONLY a prompt text.\n"
+                    + "Information will be given and you must reply with ONLY a prompt text within the quotations (do NOT include the quotations).\n"
                     + "Some maids are from the popular Touhou Project series, so if you are aware use information from said series to prompt this model.\n"
                     + "Here is an example input and an example output:\n"
                     + "Input: \"Name: Reimu Hakurei. Description: Shrine Maiden of Paradise.\"\n"
-                    + "Output: \"You are Reimu Hakurei, the Shrine Maiden of Paradise. You are sympathetic, your shrine is a somewhat popular destination in your home town of Gensokyo, and you spend your time maintaining the shrine and exterminating youkai.\n" +
+                    + "Your reply (IN BETWEEN the quotes): \"You are Reimu Hakurei, the Shrine Maiden of Paradise. You are sympathetic, your shrine is a somewhat popular destination in your home town of Gensokyo, and you spend your time maintaining the shrine and exterminating youkai.\n" +
                     "Call me \"${owner_name}\" with an easygoing and carefree tone.\n" +
                     "You are somewhat simpleminded and open about your emotions and whatever ideas come to the top of your head. Straightforward but likeable.\n" +
                     "\"";
 
-            String prompt = "Name: " + name + ". Description: " + info.getDescription() + ".";
+            MaidModelInfo info = CustomPackLoader.MAID_MODELS.getInfo(modelId).orElse(new MaidModelInfo());
+
+            String prompt = "Name: " + I18n.get(ParseI18n.getI18nKey(info.getName())) + ". Description: " + String.join(", ", info.getDescription().stream().map(d -> I18n.get(ParseI18n.getI18nKey(d))).toList())  + ".";
 
             // run the prompt
             String model = chatData.getChatModel();
@@ -175,27 +198,30 @@ setting: |
             ChatClient chatClient = Service.getChatClient(chatData.getChatSite());
             chatClient.chat(chatCompletion).handle(chatCompletionResponse -> {
                 String ourDescription = chatCompletionResponse.getFirstChoiceMessage();
-                System.out.println("GOT: " + ourDescription);
                 synchronized (SETTINGS) {
-                    SETTINGS.put(name, generateConfigFromDescription(name, ourDescription));
+                    try {
+                        SETTINGS.put(modelId, generateConfigFromDescription(modelId, ourDescription));
+                    } catch (Exception e) {
+                        System.out.println("FAILED to generate config for modelId: " + modelId);
+                        e.printStackTrace();
+                    }
                 }
             }, Throwable::printStackTrace);
         }
     }
 
-    public static Optional<CharacterSetting> getSetting(@NotNull String name) {
+    public static Optional<CharacterSetting> getSetting(@NotNull String modelId) {
         CharacterSetting result;
         synchronized (SETTINGS) {
-            result = SETTINGS.get(name);
+            result = SETTINGS.get(modelId);
         }
 
         // always ensure something is present
         if (result == null) {
+            MaidModelInfo info = CustomPackLoader.MAID_MODELS.getInfo(modelId).orElse(new MaidModelInfo());
 
-            MaidModelInfo info = PlayerMaidModels.getPlayerMaidInfo(name);
-
-            String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", name, info.getDescription());
-            result = generateConfigFromDescription(name, genericDescription);
+            String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", I18n.get(I18n.get(ParseI18n.getI18nKey(info.getName()))), String.join(", ", info.getDescription().stream().map(d -> I18n.get(I18n.get(ParseI18n.getI18nKey(d)))).toList()));
+            result = generateConfigFromDescription(modelId, genericDescription);
         }
 
         return Optional.of(result);
