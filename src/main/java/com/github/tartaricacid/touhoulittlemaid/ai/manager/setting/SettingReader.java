@@ -181,7 +181,8 @@ setting: |
 
             MaidModelInfo info = CustomPackLoader.MAID_MODELS.getInfo(modelId).orElse(new MaidModelInfo());
 
-            String prompt = "Name: " + I18n.get(ParseI18n.getI18nKey(info.getName())) + ". Description: " + String.join(", ", info.getDescription().stream().map(d -> I18n.get(ParseI18n.getI18nKey(d))).toList())  + ".";
+            String name = (info.getName() != null && !info.getName().isEmpty()) ? I18n.get(ParseI18n.getI18nKey(info.getName())) : "(undefined)";
+            String prompt = "Name: " + name + ". Description: " + String.join(", ", info.getDescription().stream().filter(Objects::nonNull).map(d -> I18n.get(ParseI18n.getI18nKey(d))).toList())  + ".";
 
             // run the prompt
             String model = chatData.getChatModel();
@@ -223,7 +224,8 @@ setting: |
         if (result == null) {
             MaidModelInfo info = CustomPackLoader.MAID_MODELS.getInfo(modelId).orElse(new MaidModelInfo());
 
-            String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", I18n.get(I18n.get(ParseI18n.getI18nKey(info.getName()))), String.join(", ", info.getDescription().stream().map(d -> I18n.get(I18n.get(ParseI18n.getI18nKey(d)))).toList()));
+            String name = (info.getName() != null && !info.getName().isEmpty()) ? I18n.get(ParseI18n.getI18nKey(info.getName())) : "(undefined)";
+            String genericDescription = String.format("You are a maid here to help the player out. Your name is %s with the provided description: %s. Please be very accomodating and nice to the player, you are eager to help! wow!", I18n.get(I18n.get(ParseI18n.getI18nKey(name))), String.join(", ", info.getDescription().stream().filter(Objects::nonNull).map(d -> I18n.get(I18n.get(ParseI18n.getI18nKey(d)))).toList()));
             result = generateConfigFromDescription(modelId, genericDescription);
             SETTINGS.put(modelId, result);
         }

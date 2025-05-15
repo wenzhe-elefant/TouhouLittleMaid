@@ -480,6 +480,9 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
 
     @Override
     public void tick() {
+
+        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
+
         if (!MinecraftForge.EVENT_BUS.post(new MaidTickEvent(this))) {
             super.tick();
             maidBauble.fireEvent((b, s) -> {
@@ -1818,10 +1821,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     }
 
     public void setModelId(String modelId) {
-
-        // ensure default setting is generated
-        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
-
         this.entityData.set(DATA_MODEL_ID, modelId);
     }
 
