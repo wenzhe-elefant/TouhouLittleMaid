@@ -1574,12 +1574,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
             int skipRandom = random.nextInt(modelSize);
             Optional<String> modelId = ServerCustomPackLoader.SERVER_MAID_MODELS.getModelIdSet().stream().skip(skipRandom).findFirst();
 
-            // default to a model ID that has character/agent functionality
-            String defaultModelId = "geckolib:winefox";
-            if (ServerCustomPackLoader.SERVER_MAID_MODELS.getModelIdSet().contains(defaultModelId)) {
-                modelId = Optional.of(defaultModelId);
-            }
-
             return modelId.map(id -> {
                 this.setModelId(id);
                 return spawnDataIn;
@@ -1823,11 +1817,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     }
 
     public void setModelId(String modelId) {
-
-        System.out.println("ASDF set model id: " + modelId);
-        // ensure default setting is generated
-        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
-
         this.entityData.set(DATA_MODEL_ID, modelId);
     }
 
