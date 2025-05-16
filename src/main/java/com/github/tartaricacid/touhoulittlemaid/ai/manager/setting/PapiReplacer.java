@@ -3,6 +3,8 @@ package com.github.tartaricacid.touhoulittlemaid.ai.manager.setting;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.response.ResponseChat;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.Service;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +31,7 @@ public class PapiReplacer {
                 .replace("${offhand_item}", getSlotItemName(EquipmentSlot.OFFHAND, maid))
                 .replace("${inventory_items}", getInventoryItems(maid))
                 .replace("${output_json_format}", getOutputJsonFormat())
+                .replace("${output_json_parameter_descriptions}", getOutputJsonParameterDescriptions(maid))
                 .replace("${chat_language}", language)
                 .replace("${tts_language}", ttsLanguage(maid.getAiChatManager().getTtsLanguage()))
                 .replace("${healthy}", getHealthyInfo(maid))
@@ -169,5 +172,18 @@ public class PapiReplacer {
 
     private static String getOutputJsonFormat() {
         return Service.GSON.toJson(new ResponseChat());
+    }
+
+    private static String getOutputJsonParameterDescriptions(EntityMaid maid) {
+
+        List<String> commands = TaskManager.getTaskIndex().stream().map(task -> task.getName().getString() + ": " + String.join(", ", task.getDescription(maid).stream().map(I18n::get).toList())).toList();
+
+        // hmm
+        String tab = "    ";
+
+        return "(chat_text): The reply in ${chat_language}. " +
+                "(tts_text): The voice reply in ${tts_language} translated from ${chat_language}. " +
+                "(optional_command): A command that can be executed, only from the following list:\n" +
+                String.join("\n" ,commands.stream().map(c -> tab + c).toList());
     }
 }

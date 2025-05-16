@@ -51,6 +51,7 @@ public final class Service {
         // 获取设定文件
         return chatManager.getSetting().map(s -> {
             String setting = s.getSetting(chatManager.getMaid(), language);
+
             String model = chatManager.getChatModel();
             double chatTemperature = chatManager.getChatTemperature();
             CappedQueue<HistoryChat> history = chatManager.getHistory();

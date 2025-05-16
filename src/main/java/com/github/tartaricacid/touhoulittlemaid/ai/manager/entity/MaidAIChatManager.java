@@ -10,9 +10,11 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.chat.openai.response.
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSApiType;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSClient;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSRequest;
+import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManger;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.TTSAudioToClientMessage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.TTSSystemAudioToClientMessage;
@@ -23,6 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public final class MaidAIChatManager extends MaidAIChatData {
     public MaidAIChatManager(EntityMaid maid) {
@@ -72,6 +76,7 @@ public final class MaidAIChatManager extends MaidAIChatData {
         String rawMessage = result.getFirstChoiceMessage();
         try {
             ResponseChat responseChat = Service.GSON.fromJson(rawMessage, ResponseChat.class);
+
             if (responseChat == null) {
                 TouhouLittleMaid.LOGGER.error("Error in Response Chat: {}", rawMessage);
                 onChatFailSync(Component.translatable("ai.touhou_little_maid.chat.format.json_format_error", rawMessage));
@@ -79,6 +84,29 @@ public final class MaidAIChatManager extends MaidAIChatData {
             }
             String chatText = responseChat.getChatText();
             String ttsText = responseChat.getTtsText();
+            String optionalCommand = responseChat.getOptionalCommand();
+
+            if (optionalCommand != null && !optionalCommand.isEmpty()) {
+                IMaidTask task = null;
+                String cmd = optionalCommand.toLowerCase().trim();
+                for (IMaidTask checkTask : TaskManager.getTaskIndex()) {
+                    String check = checkTask.getName().getString().toLowerCase().trim();
+                    if (check.equals(cmd)) {
+                        task = checkTask;
+                        break;
+                    }
+                }
+
+                if (task == null) {
+                    String commandList = "[" + String.join(", ", TaskManager.getTaskIndex().stream().map(t -> t.getName().getString()).toList()) + "]";
+                    onChatFailSync(Component.translatable("ai.touhou_little_maid.chat.format.invalid_command", optionalCommand, rawMessage, commandList));
+                    return;
+                }
+
+                TouhouLittleMaid.LOGGER.info("Running task: " + task);
+                maid.setTask(task);
+            }
+
             if (StringUtils.isBlank(chatText) || StringUtils.isBlank(ttsText)) {
                 TouhouLittleMaid.LOGGER.error("Error in Response Chat: {}", rawMessage);
                 onChatFailSync(Component.translatable("ai.touhou_little_maid.chat.format.text_is_empty", rawMessage));
@@ -91,6 +119,8 @@ public final class MaidAIChatManager extends MaidAIChatData {
             } else {
                 ChatBubbleManger.addAiChatTextSync(maid, chatText);
             }
+
+
         } catch (Exception e) {
             TouhouLittleMaid.LOGGER.error(e.getMessage());
         }
