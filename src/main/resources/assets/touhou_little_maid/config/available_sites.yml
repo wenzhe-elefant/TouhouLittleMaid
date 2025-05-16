@@ -44,6 +44,14 @@ deepseek:
     # 不支持推理模型，推理模型也不适合文本对话
     - deepseek-chat
 
+player2-tts:
+  type: tts
+  api_type : player2
+  api_key: empty_key
+  url: http://127.0.0.1:4315/v1/tts
+  models:
+  - default
+
 system:
   # 系统 TTS，虽然质量很差很差，但是好在响应速度快，而且系统自带，无需配置
   type: tts

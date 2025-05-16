@@ -70,7 +70,9 @@ public class PartAIIntegration {
                 .setSaveConsumer(manager::setChatTemperature).build());
 
         String ttsSiteName = manager.getTtsSiteName();
-        String defaultTtsSiteName = AIChatScreen.CLIENT_TTS_SITES.containsKey(ttsSiteName) ? ttsSiteName : StringUtils.EMPTY;
+        // Default to player2 to not have the default be invisible
+        // ideally this would look things up but this is the simplest way to do this for now, unsure why it doesn't search the list by default.
+        String defaultTtsSiteName = AIChatScreen.CLIENT_TTS_SITES.containsKey(ttsSiteName) ? ttsSiteName : "player2";
         DropdownBoxEntry<String> ttsSite = entryBuilder.startStringDropdownMenu(Component.translatable("config.touhou_little_maid.part_ai.tts_site_name"), defaultTtsSiteName)
                 .setDefaultValue(StringUtils.EMPTY).setSelections(AIChatScreen.CLIENT_TTS_SITES.keySet())
                 .setSaveConsumer(manager::setTtsSiteName)

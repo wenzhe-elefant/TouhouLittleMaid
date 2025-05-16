@@ -4,6 +4,7 @@ import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPa
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.MaidAIChatManager;
+import com.github.tartaricacid.touhoulittlemaid.ai.manager.setting.SettingReader;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
@@ -479,6 +480,9 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
 
     @Override
     public void tick() {
+
+        SettingReader.generateMaidSettingsIfNotPresent(this.aiChatManager, this.getModelId());
+
         if (!MinecraftForge.EVENT_BUS.post(new MaidTickEvent(this))) {
             super.tick();
             maidBauble.fireEvent((b, s) -> {
@@ -1567,6 +1571,13 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         if (modelSize > 0) {
             int skipRandom = random.nextInt(modelSize);
             Optional<String> modelId = ServerCustomPackLoader.SERVER_MAID_MODELS.getModelIdSet().stream().skip(skipRandom).findFirst();
+
+            // default to a model ID that has character/agent functionality
+            String defaultModelId = "geckolib:winefox";
+            if (ServerCustomPackLoader.SERVER_MAID_MODELS.getModelIdSet().contains(defaultModelId)) {
+                modelId = Optional.of(defaultModelId);
+            }
+
             return modelId.map(id -> {
                 this.setModelId(id);
                 return spawnDataIn;

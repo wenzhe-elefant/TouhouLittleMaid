@@ -22,8 +22,6 @@ import java.util.Set;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class PressAIChatKeyEvent {
-    public static final Set<String> CAN_CHAT_MAID_IDS = Sets.newHashSet();
-
     @SubscribeEvent
     public static void onOpenConfig(InputEvent.Key event) {
         if (isInGame() && keyIsMatch(event)) {
@@ -63,10 +61,7 @@ public class PressAIChatKeyEvent {
             return null;
         }
         String modelId = maid.getModelId();
-        if (CAN_CHAT_MAID_IDS.contains(modelId)) {
-            return maid;
-        }
-        return null;
+        return maid;
     }
 
     private static boolean isInGame() {
